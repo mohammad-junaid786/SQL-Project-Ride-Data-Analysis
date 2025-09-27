@@ -40,7 +40,7 @@ SELECT
   vehicle_id,
   TRY_CAST(rating AS DECIMAL(3,2)) AS avg_rating,
   TRY_CAST(total_rides AS INT)     AS total_rides,
-  available
+  REPLACE(LTRIM(RTRIM(available)), CHAR(13), '') AS available
 FROM dbo.stg_drivers;
 GO
 
