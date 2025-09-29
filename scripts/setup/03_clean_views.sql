@@ -17,9 +17,9 @@ GO
 -------------------------------------------------------------------------------
 -- Clean Users View
 -------------------------------------------------------------------------------
-CREATE OR ALTER VIEW dbo.clean_users AS
+CREATE OR ALTER VIEW dbo.clean_riders AS
 SELECT
-  user_id,
+  TRY_CAST(user_id AS INT) AS user_id,
   name,
   email,
   phone_number,
@@ -35,7 +35,7 @@ GO
 -------------------------------------------------------------------------------
 CREATE OR ALTER VIEW dbo.clean_drivers AS
 SELECT
-  driver_id,
+  TRY_CAST(driver_id AS INT) AS driver_id,
   name,
   vehicle_id,
   TRY_CAST(rating AS DECIMAL(3,2)) AS avg_rating,
@@ -110,9 +110,13 @@ GO
 -------------------------------------------------------------------------------
 CREATE OR ALTER VIEW dbo.clean_rides AS
 SELECT
-  ride_id,
-  user_id,
-  driver_id,
+  TRY_CAST(ride_id AS INT) AS ride_id,
+  TRY_CAST(user_id AS INT) AS user_id,
+  TRY_CAST(
+      LTRIM(RTRIM(
+          REPLACE(REPLACE(driver_id, CHAR(13), ''), CHAR(10), '')
+      )) AS INT
+  ) AS driver_id,
   start_location,
   end_location,
   TRY_CAST(LEFT(ride_start_time,19) AS DATETIME2) AS pickup_time,
@@ -127,9 +131,9 @@ GO
 -------------------------------------------------------------------------------
 CREATE OR ALTER VIEW dbo.clean_ratings AS
 SELECT
-  rating_id,
-  ride_id,
-  user_id,
+  TRY_CAST(rating_id AS INT) AS rating_id,
+  TRY_CAST(ride_id AS INT) AS ride_id,
+  TRY_CAST(user_id AS INT) AS user_id,
   TRY_CAST(rating_value AS INT) AS rating_value,
   TRY_CAST(LEFT(rating_date,19) AS DATETIME2) AS rated_at
 FROM dbo.stg_ratings;
